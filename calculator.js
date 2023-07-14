@@ -1,0 +1,105 @@
+let runningTotal=0;
+let buffer= "0";
+let previousOperator = null;
+
+const screen = document.querySelector('.screen'); 
+
+function buttonClick(value) {
+    if(isNaN(value)){
+        //this is not a number
+       handelSymbol(value);
+    }else{
+        //this is a number
+        handelNumber(value);
+    }
+    screen.innerText = buffer;
+} 
+
+function handelSymbol(symbol){
+   // if(symbol === 'C'){
+       // buffer = '0';
+        //runningTotal = 0;
+    //}
+    switch(symbol){
+        case 'C':
+            buffer = '0';
+            runningTotal = 0;
+            break;
+        case '=':
+            if(previousOperator === null){
+                //need two numbers todo maths
+                return ;
+            }
+            flushOperation(parseInt(buffer));
+            previousOperator = null;
+            buffer = runningTotal;
+            runningTotal = 0;
+            break;
+        /*case '←' : 
+        if (buffer.length === 1){
+            buffer = '0';
+        }  else{
+            buffer = buffer.substring(0, buffer.length -1);
+        }
+            break;*/
+
+        case '+':
+        case '-':
+        case '×':
+        case '÷':
+            handelMath(symbol);
+            break;            
+
+    }
+}
+
+function handelMath(symbol){
+    if ( buffer === '0'){
+        //do nothing
+        return;
+    }
+    const intBuffer = parseInt(buffer);
+
+        if (runningTotal === "0"){
+            runningTotal = intBuffer;
+        }
+        else{
+            flushOperation(intBuffer);
+        }
+
+        previousOperator = symbol;
+        buffer = '0';
+    }
+function flushOperation(intBuffer){
+    if(previousOperator === '+'){
+        runningTotal += intBuffer;
+    }else if(previousOperator === '-'){
+        runningTotal -= intBuffer;
+    }else if(previousOperator === '×'){
+        runningTotal *= intBuffer;
+    }else{
+        runningTotal /= intBuffer;
+    }
+    console.log('running total'. runningTotal);
+}
+
+
+function handelNumber(numberString){
+    if(buffer === "0") {
+        buffer = numberString;
+    }else {
+        buffer += numberString;
+    }
+    //console.log('buffer', buffer);
+      //screen.innerText = buffer;
+
+}
+
+function init() {
+  document.querySelector('.calc-buttons')
+   .addEventListener('click' , function(event){
+    buttonClick(event.target.innerText);
+   })
+}
+
+init();
